@@ -5,9 +5,7 @@ import '../components/rounded_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
-
   static String id = "login_screen";
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -34,6 +32,8 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 48.0,
             ),
             TextField(
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.emailAddress,
               onChanged: (value) {
                 //Do something with the user input.
               },
@@ -45,6 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 8.0,
             ),
             TextField(
+                textAlign: TextAlign.center,
+                obscureText: true,
               onChanged: (value) {
                 //Do something with the user input.
               },
