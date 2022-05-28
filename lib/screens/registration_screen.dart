@@ -10,7 +10,7 @@ class RegistrationScreen extends StatefulWidget {
   static String id = "registration_screen";
 
   @override
-  _RegistrationScreenState createState() => _RegistrationScreenState();
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
@@ -75,15 +75,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-  Future<void> registerNewUser(BuildContext context) async {
+  Future registerNewUser(BuildContext context) async {
     try {
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: email!, password: password!);
 
+      if (!mounted) return;
       if (newUser != null) {
         await Navigator.pushNamed(context, ChatScreen.id);
       }
-    }catch(e){
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    }
+    catch(e){
       print(e);
     }
   }

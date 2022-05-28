@@ -6,7 +6,7 @@ class ChatScreen extends StatefulWidget {
   static String id = "chat_screen";
   const ChatScreen({Key? key}) : super(key: key);
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
@@ -25,7 +25,6 @@ class _ChatScreenState extends State<ChatScreen> {
       final user = _auth.currentUser;
       if (user != null) {
         loggedInUser = user;
-        print(loggedInUser.email);
       }
     }catch(e){
       print(e);
@@ -40,8 +39,10 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: <Widget>[
           IconButton(
               icon: const Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
+              onPressed: () async {
+                await _auth.signOut();
+                if (!mounted) return;
+                Navigator.pop(context);
               }),
         ],
         title: const Text('⚡️Chat'),
