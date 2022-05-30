@@ -3,6 +3,7 @@ import 'package:chat_app/constants.dart';
 import 'package:chat_app/screens/chat_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -19,13 +20,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String? password;
   final _auth = FirebaseAuth.instance;
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
+      body:  isLoading
+          ? showProgressCircle()
+          : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -65,7 +70,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             RoundedButton(
                 buttonColor: Colors.blueAccent,
                 onPressed: () {
-                  registerNewUser(context);
+                  registerNewUser();
                 },
                 buttonText: "Register"
             ),
@@ -75,16 +80,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-  Future registerNewUser(BuildContext context) async {
+  Future registerNewUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: email!, password: password!);
 
       if (!mounted) return;
       if (newUser != null) {
+        setState(() {
+          isLoading = false;
+        });
         await Navigator.pushNamed(context, ChatScreen.id);
       }
     } on FirebaseAuthException catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
@@ -94,6 +109,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     catch(e){
       print(e);
     }
+  }
+
+  Widget showProgressCircle(){
+    return SpinKitFadingCircle(
+      itemBuilder: (BuildContext context, int index) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: index.isEven ? Colors.red : Colors.green,
+          ),
+        );
+      },
+    );
   }
 
 }

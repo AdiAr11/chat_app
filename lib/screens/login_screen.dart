@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../components/rounded_button.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -16,7 +17,6 @@ class _LoginScreenState extends State<LoginScreen> {
   // final _auth = FirebaseAuth.instance;
   String? email;
   String? password;
-
   bool isLoading = false;
 
   @override
@@ -24,9 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? showProgressCircle()
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
@@ -68,13 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   RoundedButton(
                       buttonColor: Colors.lightBlueAccent,
                       onPressed: () {
-                        setState(() {
-                          isLoading = true;
-                        });
                         authenticateUser();
-                        setState(() {
-                          isLoading = false;
-                        });
                       },
                       buttonText: "Log In"),
                 ],
@@ -83,15 +75,37 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void authenticateUser() async {
+  Widget showProgressCircle(){
+    return SpinKitFadingCircle(
+      itemBuilder: (BuildContext context, int index) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: index.isEven ? Colors.red : Colors.green,
+          ),
+        );
+      },
+    );
+  }
+
+  Future authenticateUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.toString(), password: password.toString());
       if (!mounted) return;
       if (credential != null) {
+        setState(() {
+          isLoading = false;
+        });
         Navigator.pushNamed(context, ChatScreen.id);
       }
     } on FirebaseAuthException catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
       } else if (e.code == 'wrong-password') {

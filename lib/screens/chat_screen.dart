@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/constants.dart';
@@ -12,12 +13,17 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
 
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
   late User loggedInUser;
+
+  String? textMessage;
+  late String? userName;
 
   @override
   void initState() {
     super.initState();
     getCurrentUser();
+    fetchMessages();
   }
 
   void getCurrentUser() {
@@ -25,10 +31,45 @@ class _ChatScreenState extends State<ChatScreen> {
       final user = _auth.currentUser;
       if (user != null) {
         loggedInUser = user;
+        userName = loggedInUser.email?.split("@").first;
       }
     }catch(e){
       print(e);
     }
+  }
+
+  Future fetchMessages() async {
+    _firestore.collection("messages").get().then(
+          (QuerySnapshot querySnapshot) {
+            for (var message in querySnapshot.docs) {
+              print(message["text"]);
+            }
+          },
+      onError: (e) => print("Error completing: $e"),
+    );
+  }
+
+  Future messagesStream() async {
+    var snapshots = _firestore.collection("messages").snapshots();
+    await for(var snapshot in snapshots){
+      // for(var message in snapshot.docs)
+    }
+
+    StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('products').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot doc = snapshot.data!.docs[index];
+                return Text(doc['name']);
+              });
+        } else {
+          return Text("No data");
+        }
+      },
+    );
   }
 
   @override
@@ -61,13 +102,15 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: TextField(
                       onChanged: (value) {
-                        //Do something with the user input.
+                        textMessage = value;
                       },
                       decoration: kMessageTextFieldDecoration,
                     ),
                   ),
                   ElevatedButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        uploadMessage();
+                      },
                       child: const Text(
                         'Send',
                         style: kSendButtonTextStyle,
@@ -80,5 +123,12 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
     );
+  }
+
+  void uploadMessage() {
+    _firestore.collection("messages").add({
+      "text": textMessage,
+      "sender": userName
+    });
   }
 }
