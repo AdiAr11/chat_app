@@ -51,7 +51,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               onChanged: (value) {
                 email = value;
               },
-              decoration: kFieldDecoration.copyWith(hintText: "Enter your email")
+              decoration: textFieldDecoration.copyWith(hintText: "Enter your email")
             ),
             const SizedBox(
               height: 8.0,
@@ -62,7 +62,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               onChanged: (value) {
                 password = value;
               },
-              decoration: kFieldDecoration.copyWith(hintText: "Enter your password")
+              decoration: textFieldDecoration.copyWith(hintText: "Enter your password")
             ),
             const SizedBox(
               height: 24.0,

@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onChanged: (value) {
                         email = value;
                       },
-                      decoration: kFieldDecoration.copyWith(
+                      decoration: textFieldDecoration.copyWith(
                           hintText: "Enter you email")),
                   const SizedBox(
                     height: 8.0,
@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onChanged: (value) {
                         password = value;
                       },
-                      decoration: kFieldDecoration.copyWith(
+                      decoration: textFieldDecoration.copyWith(
                           hintText: "Enter you password")),
                   const SizedBox(
                     height: 24.0,
