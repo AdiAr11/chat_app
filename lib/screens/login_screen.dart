@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget showProgressCircle(){
+  Widget showProgressCircle() {
     return SpinKitFadingCircle(
       itemBuilder: (BuildContext context, int index) {
         return DecoratedBox(

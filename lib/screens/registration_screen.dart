@@ -15,7 +15,6 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-
   String? email;
   String? password;
   final _auth = FirebaseAuth.instance;
@@ -26,57 +25,56 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body:  isLoading
+      body: isLoading
           ? showProgressCircle()
           : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Hero(
-              tag: "logo",
-              transitionOnUserGestures: true,
-              child: SizedBox(
-                height: 200.0,
-                child: Image.asset('images/logo.png'),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Hero(
+                    tag: "logo",
+                    transitionOnUserGestures: true,
+                    child: SizedBox(
+                      height: 200.0,
+                      child: Image.asset('images/logo.png'),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 48.0,
+                  ),
+                  TextField(
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (value) {
+                        email = value;
+                      },
+                      decoration: textFieldDecoration.copyWith(
+                          hintText: "Enter your email")),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  TextField(
+                      textAlign: TextAlign.center,
+                      obscureText: true,
+                      onChanged: (value) {
+                        password = value;
+                      },
+                      decoration: textFieldDecoration.copyWith(
+                          hintText: "Enter your password")),
+                  const SizedBox(
+                    height: 24.0,
+                  ),
+                  RoundedButton(
+                      buttonColor: Colors.blueAccent,
+                      onPressed: () {
+                        registerNewUser();
+                      },
+                      buttonText: "Register"),
+                ],
               ),
             ),
-            const SizedBox(
-              height: 48.0,
-            ),
-            TextField(
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                email = value;
-              },
-              decoration: textFieldDecoration.copyWith(hintText: "Enter your email")
-            ),
-            const SizedBox(
-              height: 8.0,
-            ),
-            TextField(
-              textAlign: TextAlign.center,
-              obscureText: true,
-              onChanged: (value) {
-                password = value;
-              },
-              decoration: textFieldDecoration.copyWith(hintText: "Enter your password")
-            ),
-            const SizedBox(
-              height: 24.0,
-            ),
-            RoundedButton(
-                buttonColor: Colors.blueAccent,
-                onPressed: () {
-                  registerNewUser();
-                },
-                buttonText: "Register"
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -105,13 +103,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
       }
-    }
-    catch(e){
+    } catch (e) {
       print(e);
     }
   }
 
-  Widget showProgressCircle(){
+  Widget showProgressCircle() {
     return SpinKitFadingCircle(
       itemBuilder: (BuildContext context, int index) {
         return DecoratedBox(
@@ -122,5 +119,4 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
     );
   }
-
 }
