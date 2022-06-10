@@ -1,6 +1,7 @@
 import 'package:chat_app/components/rounded_button.dart';
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/screens/chat_screen.dart';
+import 'package:chat_app/screens/verify_email_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -94,7 +95,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         setState(() {
           isLoading = false;
         });
-        await Navigator.pushNamed(context, ChatScreen.id);
+        await Navigator.pushNamed(context, VerifyEmailPage.id);
       }
     } on FirebaseAuthException catch (e) {
       setState(() {

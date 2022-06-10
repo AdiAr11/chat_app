@@ -40,11 +40,9 @@ class _ChatScreenState extends State<ChatScreen> {
         leading: null,
         actions: <Widget>[
           IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () async {
-                await _auth.signOut();
-                if (!mounted) return;
-                Navigator.pop(context);
+              icon: const Icon(Icons.logout_rounded),
+              onPressed: () {
+                showLogoutDialog(context);
               }),
         ],
         title: const Text('⚡️Chat'),
@@ -92,6 +90,41 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  showLogoutDialog(BuildContext context) {
+
+    Widget cancelButton = TextButton(
+      child: const Text("Cancel"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: const Text("Log Out"),
+      onPressed:  () async {
+        Navigator.of(context).pop();
+        await _auth.signOut();
+        if (!mounted) return;
+        Navigator.pop(context);
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: const Text("Logout"),
+      content: const Text("Are you sure you want to log out?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 

@@ -21,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: isLoading
@@ -77,6 +78,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void showSnackBar(String message){
+    var snackBar = SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   Widget showProgressCircle() {
     return SpinKitFadingCircle(
       itemBuilder: (BuildContext context, int index) {
@@ -108,11 +116,15 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         isLoading = false;
       });
+      print(e);
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        showSnackBar('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        showSnackBar('Wrong password provided for that user.');
+      } else{
+        showSnackBar(e.toString());
       }
     }
   }
+
 }
