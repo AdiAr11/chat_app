@@ -23,7 +23,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     // TODO: implement initState
     super.initState();
     isEmailVerified = currentUser!.emailVerified;
-    print(currentUser!.email);
     if(!isEmailVerified){
       sendVerificationEmail();
     }

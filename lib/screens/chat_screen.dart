@@ -55,7 +55,7 @@ class _ChatScreenState extends State<ChatScreen> {
           children: <Widget>[
             Expanded(
               child: ListView(
-                // reverse: true,
+                reverse: true,
                 shrinkWrap: true,
                 children: const [MessagesStream()],
               ),
@@ -156,9 +156,6 @@ class MessagesStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    // Stream<QuerySnapshot> collectionStream =
-    //     FirebaseFirestore.instance.collection('messages').snapshots();
 
     Stream<QuerySnapshot> collectionStream =
     FirebaseFirestore.instance.collection('messages').

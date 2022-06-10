@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/screens/chat_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../components/rounded_button.dart';
@@ -18,6 +21,28 @@ class _LoginScreenState extends State<LoginScreen> {
   String? email;
   String? password;
   bool isLoading = false;
+
+  bool isEmailVerified = false;
+  var currentUser = FirebaseAuth.instance.currentUser;
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    isEmailVerified = currentUser?.emailVerified ?? false;
+
+    timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      checkEmailVerifiedOrNot();
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    timer?.cancel();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +97,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         authenticateUser();
                       },
                       buttonText: "Log In"),
+
+                      RichText(
+                      text: TextSpan(
+                      style: const TextStyle(color: Colors.black87),
+                      children: <TextSpan>[
+                        const TextSpan(text: '\nDid not recieve verification email? check spam folder'),
+                        TextSpan(
+                            text: ' or resend',
+                            style: const TextStyle(color: Colors.blue),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                sendVerificationEmail();
+                              }),
+                      ],
+                    ),
+                    )
+
                 ],
               ),
             ),
@@ -83,6 +125,15 @@ class _LoginScreenState extends State<LoginScreen> {
       content: Text(message),
       backgroundColor: Colors.red,);
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future sendVerificationEmail() async {
+    try {
+      await currentUser?.sendEmailVerification();
+      showSnackBar("Verification email sent");
+    }catch(e){
+      showSnackBar(e.toString());
+    }
   }
 
   Widget showProgressCircle() {
@@ -97,6 +148,17 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future checkEmailVerifiedOrNot() async {
+
+    await currentUser!.reload();
+    setState((){
+      isEmailVerified = currentUser!.emailVerified;
+    });
+    if(isEmailVerified){
+      timer!.cancel();
+    }
+  }
+
   Future authenticateUser() async {
     setState(() {
       isLoading = true;
@@ -106,11 +168,16 @@ class _LoginScreenState extends State<LoginScreen> {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.toString(), password: password.toString());
       if (!mounted) return;
-      if (credential != null) {
+      if (credential != null && currentUser!.emailVerified) {
         setState(() {
           isLoading = false;
         });
         Navigator.pushNamed(context, ChatScreen.id);
+      }else if(!currentUser!.emailVerified){
+        setState(() {
+          isLoading = false;
+        });
+        showSnackBar("Email is not verified");
       }
     } on FirebaseAuthException catch (e) {
       setState(() {

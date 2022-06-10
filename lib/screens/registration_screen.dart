@@ -1,7 +1,6 @@
 import 'package:chat_app/components/rounded_button.dart';
 import 'package:chat_app/constants.dart';
-import 'package:chat_app/screens/chat_screen.dart';
-import 'package:chat_app/screens/verify_email_page.dart';
+import 'package:chat_app/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -19,6 +18,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String? email;
   String? password;
   final _auth = FirebaseAuth.instance;
+
+  var currentUser = FirebaseAuth.instance.currentUser;
 
   bool isLoading = false;
 
@@ -95,7 +96,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         setState(() {
           isLoading = false;
         });
-        await Navigator.pushNamed(context, VerifyEmailPage.id);
+        sendVerificationEmail();
+        await Navigator.pushNamed(context, WelcomeScreen.id);
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -116,6 +118,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       content: Text(message),
       backgroundColor: Colors.red,);
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future sendVerificationEmail() async {
+    try {
+      await currentUser?.sendEmailVerification();
+      showSnackBar("Verification email sent");
+    }catch(e){
+      showSnackBar(e.toString());
+    }
   }
 
   Widget showProgressCircle() {
