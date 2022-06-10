@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -29,7 +30,6 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
-    fetchMessages();
   }
 
   @override
@@ -129,9 +129,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void uploadMessage() {
+
+    DateTime presentTime = DateTime.now();
+
     _firestore
         .collection("messages")
-        .add({"text": textMessage, "sender": userName});
+        .add({"text": textMessage, "sender": userName, "time": presentTime});
   }
 
   void getCurrentUser() {
@@ -146,17 +149,6 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future fetchMessages() async {
-    _firestore.collection("messages").get().then(
-          (QuerySnapshot querySnapshot) {
-        for (var message in querySnapshot.docs) {
-          print(message["text"]);
-        }
-      },
-      onError: (e) => print("Error completing: $e"),
-    );
-  }
-
 }
 
 class MessagesStream extends StatelessWidget {
@@ -165,8 +157,12 @@ class MessagesStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    // Stream<QuerySnapshot> collectionStream =
+    //     FirebaseFirestore.instance.collection('messages').snapshots();
+
     Stream<QuerySnapshot> collectionStream =
-        FirebaseFirestore.instance.collection('messages').snapshots();
+    FirebaseFirestore.instance.collection('messages').
+    orderBy("time", descending: true).snapshots();
 
     return StreamBuilder<QuerySnapshot>(
         builder: (context, snapshot) {

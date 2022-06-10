@@ -102,13 +102,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         isLoading = false;
       });
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        showSnackBar('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        showSnackBar('The account already exists for that email.');
       }
     } catch (e) {
-      print(e);
+      showSnackBar(e.toString());
     }
+  }
+
+  void showSnackBar(String message){
+    var snackBar = SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Widget showProgressCircle() {
