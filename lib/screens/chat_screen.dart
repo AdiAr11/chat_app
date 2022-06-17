@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -37,6 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         leading: null,
         actions: <Widget>[
           IconButton(
@@ -45,7 +45,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 showLogoutDialog(context);
               }),
         ],
-        title: const Text('⚡️Chat'),
+        title: const Text('🚀 Chat'),
         backgroundColor: Colors.lightBlueAccent,
       ),
       body: SafeArea(

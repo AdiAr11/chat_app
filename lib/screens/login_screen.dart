@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       tag: "logo",
                       child: SizedBox(
                         height: 200.0,
-                        child: Image.asset('images/logo.png'),
+                        child: Image.asset('images/rocket.png'),
                       ),
                     ),
                   ),
@@ -99,12 +99,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       buttonText: "Log In"),
 
                       RichText(
+                        textAlign: TextAlign.center,
                       text: TextSpan(
                       style: const TextStyle(color: Colors.black87),
                       children: <TextSpan>[
-                        const TextSpan(text: '\nDid not recieve verification email? check spam folder'),
+                        const TextSpan(text: '\nDid not recieve verification email? check spam folder or'),
                         TextSpan(
-                            text: ' or resend',
+                            text: ' resend',
                             style: const TextStyle(color: Colors.blue),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
@@ -168,12 +169,12 @@ class _LoginScreenState extends State<LoginScreen> {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.toString(), password: password.toString());
       if (!mounted) return;
-      if (credential != null && currentUser!.emailVerified) {
+      if (credential != null && isEmailVerified) {
         setState(() {
           isLoading = false;
         });
         Navigator.pushNamed(context, ChatScreen.id);
-      }else if(!currentUser!.emailVerified){
+      }else if(!isEmailVerified){
         setState(() {
           isLoading = false;
         });
@@ -183,7 +184,6 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         isLoading = false;
       });
-      print(e);
       if (e.code == 'user-not-found') {
         showSnackBar('No user found for that email.');
       } else if (e.code == 'wrong-password') {

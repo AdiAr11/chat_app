@@ -41,7 +41,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       transitionOnUserGestures: true,
                       child: SizedBox(
                         height: 200.0,
-                        child: Image.asset('images/logo.png'),
+                        child: Image.asset('images/rocket.png'),
                       ),
                     ),
                   ),

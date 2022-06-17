@@ -59,7 +59,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     return Scaffold(
       backgroundColor: animation.value,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,7 +70,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                   tag: "logo",
                   child: SizedBox(
                     height: logoAnimation.value * 70,
-                    child: Image.asset('images/logo.png'),
+                    child: Image.asset('images/rocket.png'),
                   ),
                 ),
                 DefaultTextStyle(
@@ -82,7 +82,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                   child: AnimatedTextKit(
                     isRepeatingAnimation: false,
                       animatedTexts: [
-                        TypewriterAnimatedText("Flash Chat")
+                        TypewriterAnimatedText("Rocket Chat")
                       ]
                   ),
                 )
